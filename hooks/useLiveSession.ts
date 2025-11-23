@@ -1,6 +1,8 @@
+
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { GoogleGenAI, LiveServerMessage, Modality } from '@google/genai';
 import { createPcmBlob, decodeAudioData, base64ToUint8Array } from '../utils/audioUtils';
+import { getApiKey } from '../utils/envUtils';
 import { Message } from '../types';
 
 const INPUT_SAMPLE_RATE = 16000;
@@ -89,7 +91,11 @@ export const useLiveSession = ({ modelId, systemInstruction, initialImageBase64,
 
   const startSession = useCallback(async () => {
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const apiKey = getApiKey();
+      if (!apiKey) {
+        throw new Error("API Key not found. Please configure it in settings.");
+      }
+      const ai = new GoogleGenAI({ apiKey });
 
       // Audio Setup
       const stream = await navigator.mediaDevices.getUserMedia({ 

@@ -5,6 +5,7 @@ import { Report } from './components/Report';
 import { HistoryList } from './components/HistoryList';
 import { generateScenarioImage } from './services/geminiService';
 import { saveHistoryItem } from './services/historyService';
+import { getApiKey } from './utils/envUtils';
 import { Camera, Mic, Play, Key, History, Map } from 'lucide-react';
 import { LoadingSpinner } from './components/LoadingSpinner';
 
@@ -19,8 +20,8 @@ function App() {
 
   useEffect(() => {
     const checkKey = async () => {
-      // Robust check for various environments
-      const envKey = typeof process !== 'undefined' ? process.env?.API_KEY : undefined;
+      // 1. Check robust environment variable check (Vite/Process/Polyfill)
+      const envKey = getApiKey();
       
       if (envKey) {
           setHasApiKey(true);
@@ -28,6 +29,7 @@ function App() {
           return;
       }
 
+      // 2. Check AI Studio injection (fallback)
       const aistudio = (window as any).aistudio;
       if (aistudio && typeof aistudio.hasSelectedApiKey === 'function') {
         try {
@@ -37,9 +39,6 @@ function App() {
             setHasApiKey(false);
         }
       } else {
-         // If no AI studio and no Env key, we still let them try, but it might fail later
-         // Or we could implement a manual input. For now, we trust the deployment config.
-         // If "cannot deploy", usually means env var is missing.
          setHasApiKey(false); 
       }
       setIsCheckingKey(false);
@@ -58,8 +57,7 @@ function App() {
         setHasApiKey(true); 
       }
     } else {
-        // Simple fallback if not in AI Studio environment
-        alert("Please set REACT_APP_API_KEY or VITE_API_KEY in your deployment settings.");
+        alert("Please set VITE_API_KEY in your Vercel project settings.");
     }
   };
 
@@ -126,8 +124,8 @@ function App() {
     );
   }
 
-  // Fallback for missing key (Non-AI Studio Env)
-  if (!hasApiKey && !(typeof process !== 'undefined' && process.env?.API_KEY)) {
+  // Fallback for missing key
+  if (!hasApiKey) {
      return (
          <div className="min-h-screen bg-retro-bg flex flex-col items-center justify-center p-6 font-sans">
              <div className="max-w-md w-full bg-white rounded-3xl border-4 border-retro-border shadow-retro p-8 text-center space-y-6">
@@ -136,13 +134,13 @@ function App() {
                  </div>
                  <h1 className="text-3xl font-black text-retro-dark uppercase">Acesso Necessário</h1>
                  <p className="text-gray-600 font-medium">
-                     Selecione sua chave API para começar a praticar.
+                     Não encontramos uma chave de API. Se você está no Vercel, certifique-se de configurar a variável de ambiente <code>VITE_API_KEY</code>.
                  </p>
                  <button 
                     onClick={handleSelectKey}
                     className="w-full py-4 bg-retro-secondary hover:bg-teal-500 rounded-xl font-black text-lg text-white border-4 border-retro-border shadow-retro hover:shadow-none hover:translate-y-1 transition-all"
                  >
-                    CONECTAR CHAVE
+                    CONECTAR CHAVE (AI Studio)
                  </button>
              </div>
          </div>
@@ -214,7 +212,7 @@ function App() {
 
         <div className="text-center space-y-4 pt-4">
           <div className="inline-block bg-retro-card px-6 py-2 rounded-full border-4 border-retro-border shadow-retro-sm transform -rotate-2">
-            <h1 className="text-3xl font-black text-retro-dark uppercase tracking-wide">FalaBrasil</h1>
+            <h1 className="text-3xl font-black text-retro-dark uppercase tracking-wide">Fala português</h1>
           </div>
           <p className="text-gray-600 font-bold text-lg">Prática de Conversação</p>
         </div>
@@ -270,7 +268,7 @@ function App() {
       </div>
       
       <p className="text-xs font-bold text-retro-dark/50 mt-8 uppercase tracking-widest">
-         Powered by Gemini Live
+         Powered by LIUSHANXI
       </p>
     </div>
   );

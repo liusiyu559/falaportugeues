@@ -3,10 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FalaBrasil AI</title>
-    <!-- Polyfill process for browser environments to prevent Vercel/Client-side crashes -->
+    <title>Fala português AI</title>
+    <!-- 
+      Polyfill process for browser environments to prevent Vercel/Client-side crashes.
+      This ensures 'process.env' references don't throw ReferenceErrors in non-Node envs.
+    -->
     <script>
-      window.process = window.process || { env: { API_KEY: '' } };
+      try {
+        if (typeof process === 'undefined') {
+           window.process = { env: { API_KEY: '' } };
+        }
+      } catch (e) {
+        console.warn('Polyfill error', e);
+      }
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">

@@ -1,8 +1,13 @@
+
 import { GoogleGenAI, Type } from "@google/genai";
 import { SessionReport } from "../types";
+import { getApiKey } from "../utils/envUtils";
 
 export const generateScenarioImage = async (topic: string): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = getApiKey();
+  if (!apiKey) throw new Error("API Key missing");
+  
+  const ai = new GoogleGenAI({ apiKey });
   
   const promptText = `Generate a hyper-realistic, photograph-style image of a daily life scene in Brazil related to: "${topic}". 
   The image MUST contain at least 10 distinct elements (people, objects, background details) to talk about. 
@@ -66,7 +71,10 @@ export const generateReport = async (
   mode: 'SCENARIO' | 'INTERVIEW',
   topic: string
 ): Promise<SessionReport> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = getApiKey();
+  if (!apiKey) throw new Error("API Key missing");
+  
+  const ai = new GoogleGenAI({ apiKey });
   
   const transcriptText = transcripts.map(t => `${t.role}: ${t.text}`).join('\n');
   
