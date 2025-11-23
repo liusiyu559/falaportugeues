@@ -1,0 +1,7 @@
+{
+  "name": "FalaBrasil AI",
+  "description": "An immersive Brazilian Portuguese speaking practice app featuring scenario-based description and exam interview simulations using Gemini Live API.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
