@@ -4,20 +4,52 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FalaBrasil AI</title>
+    <!-- Polyfill process for browser environments to prevent Vercel/Client-side crashes -->
+    <script>
+      window.process = window.process || { env: { API_KEY: '' } };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0"
-  }
-}
-</script>
-</head>
-  <body>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Fredoka', 'sans-serif'],
+            },
+            colors: {
+              retro: {
+                bg: '#E0F7FA',       // Ocean Blue
+                card: '#FFF8E1',     // Sand/Paper
+                primary: '#FF8A65',  // Coral
+                secondary: '#4DB6AC',// Teal
+                accent: '#FFD54F',   // Mustard
+                dark: '#37474F',     // Slate
+                border: '#1a202c',   // Ink
+              }
+            },
+            boxShadow: {
+              'retro': '4px 4px 0px 0px #1a202c',
+              'retro-sm': '2px 2px 0px 0px #1a202c',
+              'retro-lg': '8px 8px 0px 0px #1a202c',
+            }
+          }
+        }
+      }
+    </script>
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://aistudiocdn.com/react@^19.2.0",
+        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+        "react/": "https://aistudiocdn.com/react@^19.2.0/",
+        "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+        "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0"
+      }
+    }
+    </script>
+  </head>
+  <body class="bg-retro-bg text-retro-dark">
     <div id="root"></div>
   </body>
 </html>

@@ -13,22 +13,24 @@ export const Controls: React.FC<ControlsProps> = ({ onHangup, showCaptions, onTo
         {/* Caption Toggle */}
         <button 
             onClick={onToggleCaptions}
-            className="pointer-events-auto bg-gray-800/80 p-4 rounded-full hover:bg-gray-700 transition-all text-white backdrop-blur-sm"
+            className="pointer-events-auto bg-retro-accent border-2 border-retro-border p-4 rounded-2xl hover:translate-y-1 hover:shadow-none shadow-retro transition-all text-retro-dark"
+            title={showCaptions ? "Ocultar Legendas" : "Mostrar Legendas"}
         >
-            {showCaptions ? <Captions size={24} /> : <CaptionsOff size={24} />}
+            {showCaptions ? <Captions size={28} strokeWidth={2.5} /> : <CaptionsOff size={28} strokeWidth={2.5} />}
         </button>
 
-        {/* Fake Mic Indicator (Always active in this implementation as it's VAD) */}
-        <div className="pointer-events-auto bg-white p-5 rounded-full shadow-lg animate-pulse">
-            <Mic size={32} className="text-green-600" />
+        {/* Mic Indicator */}
+        <div className="pointer-events-auto bg-white border-2 border-retro-border p-5 rounded-full shadow-retro-lg animate-pulse">
+            <Mic size={32} className="text-retro-secondary" strokeWidth={3} />
         </div>
 
         {/* Hangup */}
         <button 
             onClick={onHangup}
-            className="pointer-events-auto bg-red-600 hover:bg-red-700 p-4 rounded-full text-white transition-all shadow-lg"
+            className="pointer-events-auto bg-retro-primary hover:bg-red-400 border-2 border-retro-border p-4 rounded-2xl text-white transition-all shadow-retro hover:translate-y-1 hover:shadow-none"
+            title="Encerrar Chamada"
         >
-            <PhoneOff size={24} />
+            <PhoneOff size={28} strokeWidth={2.5} />
         </button>
     </div>
   );

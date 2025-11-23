@@ -2,22 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { Message, SessionReport } from '../types';
 import { generateReport } from '../services/geminiService';
 import { LoadingSpinner } from './LoadingSpinner';
-import { Award, BookOpen, CheckCircle, Home, MessageCircle, Lightbulb, Languages, History } from 'lucide-react';
+import { Award, BookOpen, CheckCircle, Home, MessageCircle, Lightbulb, Languages } from 'lucide-react';
 
 interface ReportProps {
   messages: Message[];
   mode: 'SCENARIO' | 'INTERVIEW';
   topic: string;
-  existingReport?: SessionReport | null; // New prop: if provided, don't generate, just show
+  existingReport?: SessionReport | null;
   onBackHome: () => void;
-  onReportGenerated?: (report: SessionReport) => void; // Callback to save history
+  onReportGenerated?: (report: SessionReport) => void;
 }
 
 export const Report: React.FC<ReportProps> = ({ messages, mode, topic, existingReport, onBackHome, onReportGenerated }) => {
   const [report, setReport] = useState<SessionReport | null>(existingReport || null);
 
   useEffect(() => {
-    // If we already have a report (History Mode), don't fetch
     if (existingReport) return;
 
     const fetchReport = async () => {
@@ -37,54 +36,61 @@ export const Report: React.FC<ReportProps> = ({ messages, mode, topic, existingR
 
   if (!report) {
     return (
-        <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
-            <LoadingSpinner message="Gerando relatório detalhado e analisando vocabulário..." />
+        <div className="min-h-screen bg-retro-bg text-retro-dark flex items-center justify-center">
+            <LoadingSpinner message="Corrigindo prova e gerando notas..." />
         </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 font-sans overflow-y-auto">
-        <header className="bg-green-600 text-white p-6 shadow-lg sticky top-0 z-20">
+    <div className="min-h-screen bg-retro-bg text-retro-dark font-sans overflow-y-auto pb-20">
+        <header className="bg-white border-b-4 border-retro-border p-6 shadow-sm sticky top-0 z-20">
             <div className="max-w-3xl mx-auto flex justify-between items-center">
                 <div>
-                  <h1 className="text-2xl font-bold">Relatório de Prática</h1>
-                  <div className="flex items-center gap-2 text-sm text-green-100 opacity-90">
-                    <span className="bg-green-700 px-2 py-0.5 rounded text-xs font-mono">
+                  <h1 className="text-2xl font-black uppercase tracking-wider text-retro-dark">Boletim de Prática</h1>
+                  <div className="flex items-center gap-3 mt-1">
+                    <span className={`px-3 py-1 rounded-lg text-xs font-bold border-2 border-retro-border shadow-retro-sm ${mode === 'SCENARIO' ? 'bg-retro-accent' : 'bg-retro-secondary text-white'}`}>
                         {mode === 'SCENARIO' ? 'CENÁRIO' : 'ENTREVISTA'}
                     </span>
-                    <span>Tema: {topic}</span>
+                    <span className="font-bold text-gray-600">{topic}</span>
                   </div>
                 </div>
-                <button onClick={onBackHome} className="bg-white/20 p-2 rounded-full hover:bg-white/30">
-                    <Home size={24} />
+                <button onClick={onBackHome} className="bg-retro-dark text-white p-3 rounded-xl border-2 border-black hover:bg-gray-800 shadow-retro hover:shadow-none hover:translate-y-1 transition-all">
+                    <Home size={24} strokeWidth={2.5} />
                 </button>
             </div>
         </header>
 
-        <main className="max-w-3xl mx-auto p-6 space-y-6 pb-20">
-            {/* Score Card */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 flex items-center justify-between">
-                <div>
-                    <h2 className="text-gray-500 text-sm uppercase font-bold tracking-wide">Nível de Fluência</h2>
-                    <span className="text-5xl font-extrabold text-green-600">{report.score}<span className="text-xl text-gray-400">/10</span></span>
+        <main className="max-w-3xl mx-auto p-6 space-y-8">
+            {/* Score Card - Retro Stamp Style */}
+            <div className="bg-retro-card rounded-3xl p-8 border-4 border-retro-border shadow-retro flex items-center justify-between relative overflow-hidden">
+                <div className="z-10">
+                    <h2 className="text-retro-dark text-sm uppercase font-black tracking-widest mb-2">Nota Final</h2>
+                    <div className="flex items-baseline gap-2">
+                        <span className="text-6xl font-black text-retro-primary">{report.score}</span>
+                        <span className="text-2xl font-bold text-gray-400">/10</span>
+                    </div>
                 </div>
-                <Award size={48} className="text-yellow-500" />
+                <div className="bg-white p-4 rounded-full border-4 border-retro-border shadow-retro-sm rotate-12 transform">
+                    <Award size={48} className="text-retro-accent" strokeWidth={2.5} />
+                </div>
+                {/* Decorative background pattern */}
+                <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-retro-primary opacity-10 rounded-full"></div>
             </div>
 
-            {/* Summary: Bilingual Description/Answers */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 border-l-4 border-l-blue-500">
-                <h3 className="text-xl font-bold mb-3 flex items-center gap-2 text-blue-700">
-                    <BookOpen size={20} /> 
-                    {mode === 'SCENARIO' ? 'Descrição Modelo (Bilingue)' : 'Sugestão de Respostas (Bilingue)'}
-                </h3>
-                <div className="bg-blue-50 p-4 rounded-lg space-y-4">
+            {/* Summary */}
+            <div className="bg-white rounded-3xl border-4 border-retro-border shadow-retro overflow-hidden">
+                <div className="bg-blue-100 p-4 border-b-4 border-retro-border flex items-center gap-2">
+                    <BookOpen size={24} className="text-blue-600" strokeWidth={2.5}/>
+                    <h3 className="text-xl font-black text-retro-dark uppercase">Resumo da Lição</h3>
+                </div>
+                <div className="p-6 space-y-6">
                     {report.summary.map((item, i) => (
-                        <div key={i} className="flex flex-col gap-1">
-                            <p className="text-gray-800 font-medium text-lg leading-snug">
+                        <div key={i} className="flex flex-col gap-2 p-4 bg-gray-50 rounded-xl border-2 border-gray-100 hover:border-blue-200 transition-colors">
+                            <p className="text-retro-dark font-bold text-lg leading-snug">
                                 {item.portuguese}
                             </p>
-                            <p className="text-gray-500 text-sm">
+                            <p className="text-gray-500 font-medium">
                                 {item.chinese}
                             </p>
                         </div>
@@ -92,26 +98,27 @@ export const Report: React.FC<ReportProps> = ({ messages, mode, topic, existingR
                 </div>
             </div>
 
-             {/* Vocabulary Table */}
-             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-                <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-purple-700">
-                    <Languages size={20} /> Vocabulário Essencial
-                </h3>
-                <div className="grid gap-4">
+             {/* Vocabulary */}
+             <div className="bg-white rounded-3xl border-4 border-retro-border shadow-retro overflow-hidden">
+                <div className="bg-purple-100 p-4 border-b-4 border-retro-border flex items-center gap-2">
+                    <Languages size={24} className="text-purple-600" strokeWidth={2.5}/>
+                    <h3 className="text-xl font-black text-retro-dark uppercase">Vocabulário</h3>
+                </div>
+                <div className="p-6 grid gap-4">
                     {report.vocabulary.map((item, i) => (
-                        <div key={i} className="bg-purple-50/50 rounded-xl p-4 border border-purple-100 hover:border-purple-300 transition-colors">
+                        <div key={i} className="bg-white rounded-2xl p-4 border-2 border-retro-border shadow-retro-sm hover:translate-x-1 transition-transform">
                             <div className="flex justify-between items-start mb-2">
-                                <div>
-                                  <span className="text-lg font-bold text-purple-900">{item.word}</span>
-                                  <span className="ml-2 text-xs px-2 py-0.5 bg-purple-200 text-purple-800 rounded-full uppercase font-semibold">
+                                <div className="flex items-baseline gap-2">
+                                  <span className="text-xl font-black text-purple-700">{item.word}</span>
+                                  <span className="text-xs px-2 py-0.5 bg-purple-200 text-purple-900 rounded-lg border border-purple-300 font-bold uppercase">
                                     {item.type}
                                   </span>
                                 </div>
-                                <span className="text-sm text-gray-600 font-medium bg-white px-2 py-1 rounded shadow-sm">
+                                <span className="text-sm font-bold bg-gray-100 px-3 py-1 rounded-lg border border-gray-300">
                                   {item.definition}
                                 </span>
                             </div>
-                            <p className="text-gray-700 text-sm border-t border-purple-100 pt-2 mt-1 italic">
+                            <p className="text-gray-600 text-sm font-medium border-t-2 border-dashed border-gray-200 pt-2 mt-2">
                                 "{item.example}"
                             </p>
                         </div>
@@ -119,41 +126,46 @@ export const Report: React.FC<ReportProps> = ({ messages, mode, topic, existingR
                 </div>
             </div>
 
-            {/* Feedback & Corrections */}
+            {/* Corrections & Feedback */}
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-                  <h3 className="text-lg font-bold mb-3 flex items-center gap-2 text-red-600">
-                      <CheckCircle size={20}/> Correções Pontuais
-                  </h3>
-                  <ul className="space-y-3">
+              <div className="bg-white rounded-3xl border-4 border-retro-border shadow-retro overflow-hidden">
+                  <div className="bg-red-100 p-4 border-b-4 border-retro-border flex items-center gap-2">
+                      <CheckCircle size={24} className="text-red-600" strokeWidth={2.5}/>
+                      <h3 className="text-lg font-black text-retro-dark uppercase">Correções</h3>
+                  </div>
+                  <ul className="p-6 space-y-4">
                       {report.corrections.map((item, i) => (
-                          <li key={i} className="flex gap-2 text-sm text-gray-700 bg-red-50 p-2 rounded">
-                            <span className="font-bold text-red-400">{i+1}.</span> {item}
+                          <li key={i} className="flex gap-3 text-sm text-gray-800 bg-red-50 p-3 rounded-xl border border-red-100">
+                            <span className="font-black text-red-500 bg-white w-6 h-6 flex items-center justify-center rounded-full border border-red-200 shrink-0">{i+1}</span> 
+                            <span className="font-medium">{item}</span>
                           </li>
                       ))}
                   </ul>
               </div>
 
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-                  <h3 className="text-lg font-bold mb-3 flex items-center gap-2 text-orange-600">
-                      <Lightbulb size={20}/> Dicas de Expressão
-                  </h3>
-                  <p className="text-gray-700 text-sm leading-relaxed">
-                    {report.feedback}
-                  </p>
+              <div className="bg-white rounded-3xl border-4 border-retro-border shadow-retro overflow-hidden">
+                  <div className="bg-yellow-100 p-4 border-b-4 border-retro-border flex items-center gap-2">
+                      <Lightbulb size={24} className="text-yellow-600" strokeWidth={2.5}/>
+                      <h3 className="text-lg font-black text-retro-dark uppercase">Feedback</h3>
+                  </div>
+                  <div className="p-6">
+                    <p className="text-gray-700 font-medium leading-relaxed bg-yellow-50 p-4 rounded-xl border border-yellow-100 border-dashed">
+                        {report.feedback}
+                    </p>
+                  </div>
               </div>
             </div>
 
-             {/* Full Transcript */}
-             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-                <h3 className="text-xl font-bold mb-3 flex items-center gap-2 text-gray-600">
-                    <MessageCircle size={20} className="text-gray-600"/> Transcrição Completa
+             {/* Transcript */}
+             <div className="bg-retro-card rounded-3xl border-4 border-retro-border shadow-retro p-6">
+                <h3 className="text-xl font-black mb-4 flex items-center gap-2 text-retro-dark uppercase">
+                    <MessageCircle size={24} strokeWidth={2.5}/> Transcrição
                 </h3>
-                <div className="space-y-4 max-h-64 overflow-y-auto p-2 bg-gray-50 rounded-xl border border-gray-100 scrollbar-thin">
+                <div className="space-y-4 max-h-80 overflow-y-auto p-4 bg-white rounded-2xl border-2 border-retro-border inset-shadow">
                     {messages.map((msg, i) => (
                         <div key={i} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                             <span className="text-xs font-bold text-gray-400 mb-1 uppercase">{msg.role === 'ai' ? 'Professor' : 'Você'}</span>
-                             <div className={`p-3 rounded-lg text-sm max-w-[90%] ${msg.role === 'user' ? 'bg-green-100 text-green-900' : 'bg-white border border-gray-200 text-gray-800'}`}>
+                             <span className="text-[10px] font-black text-gray-400 mb-1 uppercase tracking-wider">{msg.role === 'ai' ? 'Professor' : 'Você'}</span>
+                             <div className={`p-3 rounded-xl text-sm font-bold border-2 border-retro-border shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)] ${msg.role === 'user' ? 'bg-retro-secondary text-white' : 'bg-gray-100 text-gray-800'}`}>
                                 {msg.text}
                              </div>
                         </div>
@@ -161,14 +173,12 @@ export const Report: React.FC<ReportProps> = ({ messages, mode, topic, existingR
                 </div>
             </div>
             
-            <div className="pt-6">
-                <button 
-                    onClick={onBackHome}
-                    className="w-full py-4 bg-gray-900 text-white rounded-xl font-bold shadow-lg hover:bg-gray-800 transition-colors"
-                >
-                    Voltar ao Início
-                </button>
-            </div>
+            <button 
+                onClick={onBackHome}
+                className="w-full py-4 bg-retro-dark text-white rounded-2xl font-black text-xl shadow-retro hover:shadow-none hover:translate-y-1 transition-all border-4 border-transparent"
+            >
+                VOLTAR AO INÍCIO
+            </button>
         </main>
     </div>
   );
